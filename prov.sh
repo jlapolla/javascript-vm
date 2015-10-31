@@ -29,3 +29,6 @@ sudo pip install Pygments
 
 # Install Perl packages
 cpanm --sudo install HTML::TreeBuilder YAML::XS
+
+# Install Node.js packages
+npm install -g http-server
