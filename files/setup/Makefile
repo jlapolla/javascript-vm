@@ -28,7 +28,7 @@ ifdef require # GMTK is installed
   include helpdoc.mk
 
 # Create targets for THIS Makefile
-# Specific rules
+# Home directory preferences
 $(HOME)/.bashrc: $(d)pref/bash/.bashrc
 	cp $< $@
 
@@ -41,6 +41,7 @@ $(HOME)/.gitignore_global: $(d)pref/git/.gitignore_global
 $(HOME)/.vimrc: $(d)pref/vim/.vimrc
 	cp $< $@
 
+# Node.js
 nodejs_binary := $(call ext_nodejs_install)
 /usr/local/bin/node: $(filter %/node,$(nodejs_binary))
 	sudo ln -sf $(abspath $<) $@
@@ -53,9 +54,13 @@ $(HOME)/.npmrc: | /usr/local/bin/npm
 	sudo rm -rf $(HOME)/.npm
 	printf '%s\n' 'prefix=$(HOME)/usr/local' >$@
 
+# Perl App::cpanminus
+/usr/local/bin/cpanm: $(d)prov/cpanm/cpanm.pl
+	perl $(d)prov/cpanm/cpanm.pl --sudo App::cpanminus
+
 # Summary rules
 $(call helpdoc,$(d)all,Install all required files.)
-$(d)all: $(addprefix $(HOME)/,.bashrc .gitconfig .gitignore_global .npmrc .vimrc) $(call ext_vundle_install,$(HOME)/) /usr/local/bin/node
+$(d)all: $(addprefix $(HOME)/,.bashrc .gitconfig .gitignore_global .npmrc .vimrc) $(call ext_vundle_install,$(HOME)/) $(addprefix /usr/local/bin/,cpanm node)
 	touch $@
 
 .PHONY: $(d)update

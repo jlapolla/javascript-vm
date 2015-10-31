@@ -9,9 +9,6 @@ sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt-get install -y git python-pip
 
-# Install Python packages
-sudo pip install Pygments
-
 tar -xzf files.tar.gz
 
 (
@@ -26,3 +23,9 @@ tar -xzf files.tar.gz
   cd setup
   make update
 )
+
+# Install Python packages
+sudo pip install Pygments
+
+# Install Perl packages
+cpanm --sudo install HTML::TreeBuilder YAML::XS
