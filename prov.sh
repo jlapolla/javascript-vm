@@ -7,7 +7,10 @@ export MAKE_PATH="$HOME/usr/local/gmtk/include"
 
 sudo apt-get update
 sudo apt-get upgrade -y
-sudo apt-get install -y git
+sudo apt-get install -y git python-pip
+
+# Install Python packages
+sudo pip install Pygments
 
 tar -xzf files.tar.gz
 
