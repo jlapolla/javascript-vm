@@ -7,7 +7,7 @@ export MAKE_PATH="$HOME/usr/local/gmtk/include"
 
 sudo apt-get update
 sudo apt-get upgrade -y
-sudo apt-get install -y git python-pip
+sudo apt-get install -y default-jre git python-pip
 
 tar -xzf files.tar.gz
 
