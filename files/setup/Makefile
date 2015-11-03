@@ -1,21 +1,34 @@
-# GNU Make toolkit may not be installed yet
+# GNU Make Toolkit (GMTK) may not be installed
 -include require.mk
 
-# Use modules if GNU Make toolkit is installed
-ifdef require
-  # Download preferences module
-  ifeq ($(wildcard $(d)pref/Makefile),)
+# Check for GMTK
+ifdef require # GMTK is installed
+  # Load modules and targets
+
+  # Download required modules
+  # Check for preferences module
+  ifeq ($(wildcard $(d)pref/Makefile),) # Preferences module is not installed
+    # Download preferences module
     include exec.mk
-    $(call exec,git clone 'https://github.com/jlapolla/preferences.git' $(d)pref,Failed to download preferences module)
-  endif # End download preferences module
+    $(call exec,git clone 'https://github.com/jlapolla/preferences.git' $(d)pref,Failed to download "preferences" module)
+  endif # End check for preferences module
+  # Check for provisions module
+  ifeq ($(wildcard $(d)prov/Makefile),) # Provisions module is not installed
+    # Download provisions module
+    include exec.mk
+    $(call exec,git clone 'https://github.com/jlapolla/provisions.git' $(d)prov,Failed to download "provisions" module)
+  endif # End check for provisions module
+
+  # Load required modules
   # Load preferences module and extensions
-  $(call ,$(call require,$(d)pref/Makefile))
-  $(call ,$(call require,$(addprefix $(d)pref/extensions/,ext_vundle_install.mk ext_vundle_update.mk)))
+  $(call ,$(call require,$(addprefix $(d),$(addsuffix /Makefile,pref prov))))
+  $(call ,$(call require,$(addprefix $(d)pref/extensions/,ext_vundle_install.mk ext_vundle_update.mk) $(addprefix $(d)prov/extensions/, nodejs_install.mk)))
 
-# Include libraries used in THIS Makefile
-include helpdoc.mk
+  # Include libraries used in THIS Makefile
+  include helpdoc.mk
 
-# File copy rules
+# Create targets for THIS Makefile
+# Home directory preferences
 $(HOME)/.bashrc: $(d)pref/bash/.bashrc
 	cp $< $@
 
@@ -28,30 +41,54 @@ $(HOME)/.gitignore_global: $(d)pref/git/.gitignore_global
 $(HOME)/.vimrc: $(d)pref/vim/.vimrc
 	cp $< $@
 
-# Update rules
-.PHONY: $(d)update-gmtk
-$(d)update-gmtk:
-	cd $(HOME)/usr/local/gmtk && git pull
+# Node.js
+nodejs_binary := $(call ext_nodejs_install)
+/usr/local/bin/node: $(filter %/node,$(nodejs_binary))
+	sudo ln -sf $(abspath $<) $@
 
-# Public rules
-.PHONY: $(d)all
-$(call helpdoc,$(d)all,Install files. Does nothing if all files are already installed.)
-$(d)all: $(addprefix $(HOME)/,.bashrc .gitconfig .gitignore_global .vimrc) $(call ext_vundle_install,$(HOME)/)
+/usr/local/bin/npm: $(filter %/npm,$(nodejs_binary)) | /usr/local/bin/node
+	sudo ln -sf $(abspath $<) $@
+
+$(HOME)/.npmrc: | /usr/local/bin/npm
+	sudo npm update -g npm
+	sudo rm -rf $(HOME)/.npm
+	printf '%s\n' 'prefix=$(HOME)/usr/local' >$@
+
+# Perl App::cpanminus
+/usr/local/bin/cpanm: $(d)prov/cpanm/cpanm.pl
+	perl $(d)prov/cpanm/cpanm.pl --sudo App::cpanminus
+
+# Summary rules
+$(call helpdoc,$(d)all,Install all required files.)
+$(d)all: $(addprefix $(HOME)/,.bashrc .gitconfig .gitignore_global .npmrc .vimrc) $(call ext_vundle_install,$(HOME)/) $(addprefix /usr/local/bin/,cpanm node)
+	touch $@
 
 .PHONY: $(d)update
 $(call helpdoc,$(d)update,Check for updates and update existing installation if required.)
-$(d)update: $(d)all $(d)update-gmtk $(call ext_vundle_update,$(HOME)/) $(d)pref/vim-plugin-update
+$(d)update: $(d)all $(call ext_vundle_update,$(HOME)/) $(d)pref/vim-plugin-update
+	cd $(HOME)/usr/local/gmtk && git pull
+	cd $(d)pref && git pull
+	cd $(d)prov && git pull
 
+# Default goal
 .DEFAULT_GOAL := help
 
-else # ifdef require
-.DEFAULT_GOAL := $(HOME)/usr/local/bin/make
-endif # ifdef require
+else # GMTK is not installed
+# Diagnostic message
+$(info GNU Make Toolkit (GMTK) not set up. Most targets are disabled.)
+$(info Run "make" to set up GMTK.)
 
+# Default goal to install GMTK
+.DEFAULT_GOAL := $(HOME)/usr/local/bin/make
+
+endif # End check for GMTK
+
+# Install GMTK
 $(HOME)/usr/local/gmtk/bin/make:
 	mkdir -p $(HOME)/usr/local
 	git clone 'https://github.com/jlapolla/gnu-make-toolkit.git' $(HOME)/usr/local/gmtk
 
+# Place GMTK wrapper script on PATH
 $(HOME)/usr/local/bin/make: $(HOME)/usr/local/gmtk/bin/make
 	mkdir -p $(@D)
 	ln -s $< $@
