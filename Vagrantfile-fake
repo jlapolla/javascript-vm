@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
-  config.vm.define "h4-blog", primary: true do |m|
+  config.vm.define "h4-site", primary: true do |m|
     m.vm.box_check_update = false
     m.ssh.forward_x11 = true
     m.vm.box = "ubuntu/trusty32"
