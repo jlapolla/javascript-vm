@@ -5,10 +5,10 @@ $(d)flags/$(2): preferences/$(1)$(2)
 	mkdir -p $(d)flags/ && touch $(d)flags/$(2)
 endef
 
-$(eval $(call $($(d)template),bash/,.bashrc))
-$(eval $(call $($(d)template),git/,.gitconfig))
-$(eval $(call $($(d)template),git/,.gitignore_global))
-$(eval $(call $($(d)template),vim/,.vimrc))
+$(eval $(call $(d)template,bash/,.bashrc))
+$(eval $(call $(d)template,git/,.gitconfig))
+$(eval $(call $(d)template,git/,.gitignore_global))
+$(eval $(call $(d)template,vim/,.vimrc))
 $(eval $(d)template :=)
 
 # Main template
