@@ -3,29 +3,29 @@
 
 # Check for GMTK
 ifdef require # GMTK is installed
-  # Load modules and targets
+# Load modules and targets
 
-  # Download required modules
-  # Check for preferences module
-  ifeq ($(wildcard preferences/Makefile),) # Preferences module is not installed
-    # Download preferences module
-    include exec.mk
-    $(call exec,git clone https://github.com/jlapolla/preferences.git preferences,Failed to clone https://github.com/jlapolla/preferences.git)
-  endif # End check for preferences module
-  # Check for provisions module
-  ifeq ($(wildcard provisions/Makefile),) # Provisions module is not installed
-    # Download provisions module
-    include exec.mk
-    $(call exec,git clone https://github.com/jlapolla/provisions.git provsions,Failed to clone https://github.com/jlapolla/provisions.git)
-  endif # End check for provisions module
+# Download required modules
+# Check for preferences module
+ifeq ($(wildcard preferences/Makefile),) # Preferences module is not installed
+  # Download preferences module
+  include exec.mk
+  $(call exec,git clone https://github.com/jlapolla/preferences.git preferences,Failed to clone https://github.com/jlapolla/preferences.git)
+endif # End check for preferences module
+# Check for provisions module
+ifeq ($(wildcard provisions/Makefile),) # Provisions module is not installed
+  # Download provisions module
+  include exec.mk
+  $(call exec,git clone https://github.com/jlapolla/provisions.git provsions,Failed to clone https://github.com/jlapolla/provisions.git)
+endif # End check for provisions module
 
-  # Load required modules
-  # Load preferences module and extensions
-  $(call ,$(call require,$(addprefix ,$(addsuffix /Makefile,preferences provisions))))
-  $(call ,$(call require,$(addprefix preferences/extensions/,ext_vundle_install.mk ext_vundle_update.mk) $(addprefix provisions/extensions/, nodejs_install.mk)))
+# Load required modules
+# Load preferences module and extensions
+$(call ,$(call require,$(addprefix ,$(addsuffix /Makefile,preferences provisions))))
+$(call ,$(call require,$(addprefix preferences/extensions/,ext_vundle_install.mk ext_vundle_update.mk) $(addprefix provisions/extensions/, nodejs_install.mk)))
 
-  # Include libraries used in THIS Makefile
-  include helpdoc.mk
+# Include libraries used in THIS Makefile
+include helpdoc.mk
 
 # Create targets for THIS Makefile
 # Home directory preferences
