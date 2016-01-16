@@ -22,24 +22,22 @@ endif # End check for provisions module
 # Load required modules
 # Load preferences module and extensions
 $(call ,$(call require,$(addprefix ,$(addsuffix /Makefile,home node npm preferences provisions))))
-$(call ,$(call require,$(addprefix preferences/extensions/,ext_vundle_install.mk ext_vundle_update.mk) $(addprefix provisions/extensions/, nodejs_install.mk)))
+$(call ,$(call require,preferences/extensions/ext_vundle_update.mk))
 
 # Include libraries used in THIS Makefile
 include helpdoc.mk
 
-# Create targets for THIS Makefile
-# Perl App::cpanminus
-/usr/local/bin/cpanm: provisions/cpanm/cpanm.pl
-	perl provisions/cpanm/cpanm.pl --sudo App::cpanminus
+flags/all: $(addsuffix flags/all,home/ node/ npm/)
+	mkdir -p flags/ && touch flags/all
 
 # Summary rules
-$(call helpdoc,all,Install all required files.)
-all: $(addprefix ~/,.bashrc .gitconfig .gitignore_global .npmrc .vimrc) $(call ext_vundle_install,~/) $(addprefix /usr/local/bin/,cpanm node)
-	touch $@
+.PHONY: all
+$(call helpdoc,all,Install all required files)
+all: flags/all
 
 .PHONY: update
-$(call helpdoc,update,Check for updates and update existing installation if required.)
-update: all $(call ext_vundle_update,~/) preferences/vim-plugin-update
+$(call helpdoc,update,Check for updates and update existing installation if required)
+update: flags/all $(call ext_vundle_update,~/) preferences/vim-plugin-update
 	cd ~/usr/local/gmtk && git pull
 	cd preferences && git pull
 	cd provisions && git pull
@@ -49,8 +47,8 @@ update: all $(call ext_vundle_update,~/) preferences/vim-plugin-update
 
 else # GMTK is not installed
 # Diagnostic message
-$(info GNU Make Toolkit (GMTK) not set up. Most targets are disabled.)
-$(info Run "make" to set up GMTK.)
+$(info GNU Make Toolkit (GMTK) not set up)
+$(info Run "make" to set up GMTK)
 
 # Default goal to install GMTK
 .DEFAULT_GOAL := ~/usr/local/bin/make

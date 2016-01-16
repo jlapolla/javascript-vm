@@ -1,6 +1,6 @@
 define $(d)template
-$(eval include require.mk)
 $(eval include helpdoc.mk)
+$(eval include require.mk)
 $(call ,$(call require,provisions/extensions/nodejs_install.mk))
 $(eval $(d)nodejs_binary := $(call ext_nodejs_install))
 
