@@ -21,39 +21,13 @@ endif # End check for provisions module
 
 # Load required modules
 # Load preferences module and extensions
-$(call ,$(call require,$(addprefix ,$(addsuffix /Makefile,preferences provisions))))
+$(call ,$(call require,$(addprefix ,$(addsuffix /Makefile,home node npm preferences provisions))))
 $(call ,$(call require,$(addprefix preferences/extensions/,ext_vundle_install.mk ext_vundle_update.mk) $(addprefix provisions/extensions/, nodejs_install.mk)))
 
 # Include libraries used in THIS Makefile
 include helpdoc.mk
 
 # Create targets for THIS Makefile
-# Home directory preferences
-~/.bashrc: preferences/bash/.bashrc
-	cp $< $@
-
-~/.gitconfig: preferences/git/.gitconfig
-	cp $< $@
-
-~/.gitignore_global: preferences/git/.gitignore_global
-	cp $< $@
-
-~/.vimrc: preferences/vim/.vimrc
-	cp $< $@
-
-# Node.js
-nodejs_binary := $(call ext_nodejs_install)
-/usr/local/bin/node: $(filter %/node,$(nodejs_binary))
-	sudo ln -sf $(abspath $<) $@
-
-/usr/local/bin/npm: $(filter %/npm,$(nodejs_binary)) | /usr/local/bin/node
-	sudo ln -sf $(abspath $<) $@
-
-~/.npmrc: | /usr/local/bin/npm
-	sudo npm update -g npm
-	sudo rm -rf ~/.npm
-	printf '%s\n' 'prefix=~/usr/local' >$@
-
 # Perl App::cpanminus
 /usr/local/bin/cpanm: provisions/cpanm/cpanm.pl
 	perl provisions/cpanm/cpanm.pl --sudo App::cpanminus

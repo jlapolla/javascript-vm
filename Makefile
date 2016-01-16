@@ -1,5 +1,5 @@
 define $(d)template
--include helpdoc.mk
+$(eval -include helpdoc.mk)
 
 $(d)share/Vagrantfile: $(d)Vagrantfile-fake
 	mkdir -p $(d)share/
