@@ -2,11 +2,11 @@ define $(d)template
 -include helpdoc.mk
 
 $(d)share/Vagrantfile: $(d)Vagrantfile-fake
-	mkdir -p $(d)share
+	mkdir -p $(d)share/
 	cp $(d)Vagrantfile-fake $(d)share/Vagrantfile
 
-$(d)files.tar.gz: $(shell find $(d)files -type f)
-	tar -C $(d)files -czf $(d)files.tar.gz $(shell find $(d)files -mindepth 1 -maxdepth 1 | sed 's:^$(d)files/::')
+$(d)files.tar.gz: $(shell find $(d)files/ -type f ! -name '*.swp')
+	tar -C $(d)files/ -czf $(d)files.tar.gz $(shell find $(d)files/ -mindepth 1 -maxdepth 1 | sed 's:^$(d)files/::')
 
 .PHONY: $(d)all
 $(call helpdoc,$(d)all,Set up files for Vagrant)
