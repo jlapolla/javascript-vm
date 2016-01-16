@@ -16,7 +16,7 @@ endif # End check for preferences module
 ifeq ($(wildcard provisions/Makefile),) # Provisions module is not installed
   # Download provisions module
   include exec.mk
-  $(call exec,git clone https://github.com/jlapolla/provisions.git provsions,Failed to clone https://github.com/jlapolla/provisions.git)
+  $(call exec,git clone https://github.com/jlapolla/provisions.git provisions,Failed to clone https://github.com/jlapolla/provisions.git)
 endif # End check for provisions module
 
 # Load required modules
