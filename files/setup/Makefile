@@ -27,17 +27,17 @@ $(call ,$(call require,preferences/extensions/ext_vundle_update.mk))
 # Include libraries used in THIS Makefile
 include helpdoc.mk
 
-flags/all: $(addsuffix flags/all,home/ node/ npm/)
-	mkdir -p flags/ && touch flags/all
+.make/all: $(addsuffix .make/all,home/ node/ npm/)
+	mkdir -p .make/ && touch .make/all
 
 # Summary rules
 .PHONY: all
 $(call helpdoc,all,Install all required files)
-all: flags/all
+all: .make/all
 
 .PHONY: update
 $(call helpdoc,update,Check for updates and update existing installation if required)
-update: flags/all $(call ext_vundle_update,~/) preferences/vim-plugin-update
+update: .make/all $(call ext_vundle_update,~/) preferences/vim-plugin-update
 	cd ~/usr/local/gmtk && git pull
 	cd preferences && git pull
 	cd provisions && git pull
@@ -64,3 +64,4 @@ endif # End check for GMTK
 ~/usr/local/bin/make: ~/usr/local/gmtk/bin/make
 	mkdir -p ~/usr/local/bin/
 	ln -sf ~/usr/local/gmtk/bin/make ~/usr/local/bin/make
+

@@ -4,20 +4,20 @@ $(eval include require.mk)
 $(call ,$(call require,provisions/extensions/nodejs_install.mk))
 $(eval $(d)nodejs_binary := $(call ext_nodejs_install))
 
-$(d)flags/node: $(filter %/node,$($(d)nodejs_binary))
+$(d).make/node: $(filter %/node,$($(d)nodejs_binary))
 	sudo ln -sf $(abspath $(filter %/node,$($(d)nodejs_binary))) /usr/local/bin/node
-	mkdir -p $(d)flags/ && touch $(d)flags/node
+	mkdir -p $(d).make/ && touch $(d).make/node
 
-$(d)flags/npm: $(filter %/npm,$($(d)nodejs_binary)) $(d)flags/node
+$(d).make/npm: $(filter %/npm,$($(d)nodejs_binary)) $(d).make/node
 	sudo ln -sf $(abspath $(filter %/npm,$($(d)nodejs_binary))) /usr/local/bin/npm
-	mkdir -p $(d)flags/ && touch $(d)flags/npm
+	mkdir -p $(d).make/ && touch $(d).make/npm
 
-$(d)flags/all: $(addprefix $(d)flags/,node npm)
-	mkdir -p $(d)flags/ && touch $(d)flags/all
+$(d).make/all: $(addprefix $(d).make/,node npm)
+	mkdir -p $(d).make/ && touch $(d).make/all
 
 .PHONY: $(d)all
 $(call helpdoc,$(d)all)
-$(d)all: $(d)flags/all
+$(d)all: $(d).make/all
 
 .DEFAULT_GOAL := help
 
@@ -27,3 +27,4 @@ endef
 
 $(eval $($(d)template))
 $(eval $(d)template :=)
+
